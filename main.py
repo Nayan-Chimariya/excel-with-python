@@ -1,6 +1,7 @@
 from openpyxl import workbook, load_workbook
 from openpyxl.utils import get_column_letter
 from tabulate import tabulate
+import os
 
 wb = load_workbook('bank.xlsx')
 ws = wb.active
@@ -48,17 +49,30 @@ def account_details(cell_row):
   print(tabulate(combined_list))
   return details_list[2]
 
-def commandList():
-  print("-------------------------\n"
-    "What do you want to do :\n"
-    "(1) Deposit balance\n"
-    "(2) Withdraw balance\n"
-    "(3) Transfer balance\n"
-    "(4) Exit\n"
-    "-------------------------\n"
-  )
+def commandList(account_type):
+  if account_type == "general user":
+    print("-------------------------\n"
+      "What do you want to do :\n"
+      "(1) Deposit balance\n"
+      "(2) Withdraw balance\n"
+      "(3) Transfer balance\n"
+      "(4) See Status\n"
+      "(5) Exit\n"
+      "-------------------------\n"
+    )
+  elif account_type == "admin":
+    print(
+      "-------------------------\n"
+      "What do you want to do :\n"
+      "(1) Add Data\n"
+      "(2) Remove Data\n"
+      "(3) Edit Data\n"
+      "(4) Exit"
+      "-------------------------\n")
+
 
 def Deposit(cell_row):
+  os.system("cls")
   deposit_amt = int(input("How much would you like to deposit?: "))
   for row in range(cell_row,cell_row+1):
     for col in range(5,6):
@@ -70,9 +84,10 @@ def Deposit(cell_row):
   print(f"Successfully deposited amount {deposit_amt}\n"
   f"Your new balance is {new_bal}\n")
   wb.save('bank.xlsx')
-  commandList()
+  commandList("general user")
   
 def Withdraw(cell_row):
+  os.system("cls")
   for row in range(cell_row,cell_row+1):
     for col in range(5,6):
       char = get_column_letter(col)
@@ -89,27 +104,31 @@ def Withdraw(cell_row):
         print("You dont have enough balance for the withdrawl")
 
   wb.save('bank.xlsx')
-  commandList()
+  commandList("general user")
 
 def available_function(account_type,cell_row):
   if account_type == "general user":
-    commandList()
+    commandList("general user")
     while True:
       command = input("command number: ")
       if command == "1":
         Deposit(cell_row)
       elif command == "2":
         Withdraw(cell_row)
-      elif command == 3:
+      elif command == "3":
         print("command 3")
-      else:
+      elif command == "4":
+        os.system("cls")
+        print("User details\n")
+        account_details(cell_row)
+        commandList("general user")
+
+      else:  
         break
 
   else:
-    print("What do you want to do :\n"
-    "(1) Add Data\n"
-    "(2) Remove Data\n"
-    "(3) Edit Data\n")
+    commandList("admin")
+    
 
 
 
