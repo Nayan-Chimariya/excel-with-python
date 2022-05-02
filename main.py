@@ -1,5 +1,6 @@
 from openpyxl import workbook, load_workbook
 from openpyxl.utils import get_column_letter
+from tabulate import tabulate
 
 wb = load_workbook('bank.xlsx')
 ws = wb.active
@@ -21,13 +22,36 @@ def does_uid_exist(UID):
 
 def pin_validity(pin,cell_row):
   for row in range(cell_row,cell_row+1):
-    for col in range(5,6):
+    for col in range(6,7):
       char = get_column_letter(col)
-      print(ws[char + str(row)].value)
       if str(ws[char + str(row)].value) == (pin):
         return "valid"
       else:
         return "invalid"  
+
+def account_type(cell_row):
+  for row in range(cell_row,cell_row+1):
+    for col in range(4,5):
+      char = get_column_letter(col)
+      return str((ws[char + str(row)].value))
+
+def account_details(cell_row):
+  title_list=[]
+  details_list =[]
+
+  for row in range(1,2):
+    for col in range(2,6):
+      char = get_column_letter(col)
+      title_list.append((ws[char + str(row)].value))
+
+  for row in range(cell_row,cell_row+1):
+    for col in range(2,6):
+      char = get_column_letter(col)
+      details_list.append((ws[char + str(row)].value))
+
+  combined_list = [list(l) for l in zip(title_list, details_list)]
+  
+  print(tabulate(combined_list))
 
 print(
   "---------------\n"
@@ -41,7 +65,11 @@ uid = int(input("Enter you ID: "))
 cell_row = (does_uid_exist(uid))
 if cell_row != False:
   pin =input("Enter pin: ")
-  print (pin_validity(pin,cell_row))
+  if (pin_validity(pin,cell_row)) == "valid":
+    print("User details\n")
+    account_details(cell_row)
+    
+
 else:
   print("UID doesnt exists in the databse\n"
     "create new account or try another UID\n")
