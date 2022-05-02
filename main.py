@@ -65,13 +65,32 @@ def Deposit(cell_row):
       char = get_column_letter(col)
       previous_bal = ws[char + str(row)].value
       ws[char + str(row)].value = int(previous_bal)+deposit_amt
-      new_bal = previous_bal + deposit_amt
+  new_bal = previous_bal + deposit_amt
       
   print(f"Successfully deposited amount {deposit_amt}\n"
   f"Your new balance is {new_bal}\n")
   wb.save('bank.xlsx')
   commandList()
   
+def Withdraw(cell_row):
+  for row in range(cell_row,cell_row+1):
+    for col in range(5,6):
+      char = get_column_letter(col)
+      previous_bal = ws[char + str(row)].value
+      withdraw_amt = int(input("How much would you like to withdraw?\n"
+      f"maximum amount |{previous_bal}|: "))
+      if withdraw_amt< previous_bal:
+        ws[char + str(row)].value = int(previous_bal)-withdraw_amt
+        new_bal = previous_bal - withdraw_amt
+        print(
+          f"Successfully withdrew amount {withdraw_amt}\n"
+          f"Your new balance is {new_bal}\n")
+      else:
+        print("You dont have enough balance for the withdrawl")
+
+  wb.save('bank.xlsx')
+  commandList()
+
 def available_function(account_type,cell_row):
   if account_type == "general user":
     commandList()
@@ -80,7 +99,7 @@ def available_function(account_type,cell_row):
       if command == "1":
         Deposit(cell_row)
       elif command == "2":
-        print("command 2")
+        Withdraw(cell_row)
       elif command == 3:
         print("command 3")
       else:
