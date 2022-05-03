@@ -9,7 +9,8 @@ ws = wb.active
 def does_value_exist(value,col1,col2):
   count = 0
   uid = value
-  for row in range(1,23):
+  end_range = len(ws['A'])+1
+  for row in range(2,end_range):
     for col in range(col1,col2):
       char = get_column_letter(col)
       if (ws[char + str(row)].value) == uid:
@@ -70,7 +71,7 @@ def commandList(account_type):
       "(1) Add Data\n"
       "(2) Remove Data\n"
       "(3) Edit Data\n"
-      "(4) Exit"
+      "(4) Exit\n"
       "-------------------------\n")
 
 
@@ -99,7 +100,7 @@ def Withdraw(cell_row,type):
       previous_bal = ws[char + str(row)].value
       withdraw_amt = int(input(f"How much would you like to {type}?\n"
       f"maximum amount |{previous_bal}|: "))
-      if withdraw_amt< previous_bal:
+      if withdraw_amt<= previous_bal:
         ws[char + str(row)].value = int(previous_bal)-withdraw_amt
         new_bal = previous_bal - withdraw_amt
         pronoun = "withdrew" if type == "withdraw" else "transferred"
@@ -119,6 +120,22 @@ def Transfer(cell_row):
     transfer = Withdraw(cell_row,"transfer")
     Deposit(receiver_acc_no,"transfer",transfer)
     
+def add():
+  end_range = len(ws['A'])
+  uid = end_range-1
+  acc_no = int(input("Enter Account Number: "))
+  cell_row = (does_value_exist(acc_no,2,3))
+  if cell_row != False:
+    print("The account number exists please create unique account number\n")
+    commandList("admin")
+  else:
+    user_name = input("Enter user name: ")
+    account_type = input("Enter account type: ")
+    balance = int(input("Enter balance: "))
+    pin = input("Enter pin value: ")
+    ws.append([uid, acc_no, user_name, account_type, balance,pin])
+    wb.save('bank.xlsx')
+    print("Data was stored in the database successfully\n")
 
 def available_function(account_type,cell_row):
   if account_type == "general user":
@@ -146,6 +163,19 @@ def available_function(account_type,cell_row):
 
   else:
     commandList("admin")
+    while True:
+      command = input("command number: ")
+      if command == "1":
+        os.system("cls")
+        add()
+      elif command == "2":
+        os.system("cls")
+        print("remove")
+      elif command == "3":
+        os.system("cls")
+        print("edit")
+      else:  
+        break
     
 print(
   "---------------\n"
@@ -168,11 +198,21 @@ def main():
       if(is_continue == 'y'):
         os.system("cls")
         main()
-
+      else:
+        exit()
+    else:
+      print("Pin doesnt match\n")
+      main()
 
   else:
     print("UID doesnt exists in the databse\n"
-      "create new account or try another UID\n")
+      "contact admins or try another UID\n")
+    is_exit = int(input("Enter 0 to exit: "))
+    if is_exit == 0:
+      exit()
+    else:
+      os.system("cls")
+      main()
 
 main()
 
