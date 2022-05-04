@@ -120,11 +120,11 @@ def Transfer(cell_row):
     transfer = Withdraw(cell_row,"transfer")
     Deposit(receiver_acc_no,"transfer",transfer)
     
-def add():
+def add_data():
   end_range = len(ws['A'])
   uid = end_range-1
   acc_no = int(input("Enter Account Number: "))
-  cell_row = (does_value_exist(acc_no,2,3))
+  cell_row = does_value_exist(acc_no,2,3)
   if cell_row != False:
     print("The account number exists please create unique account number\n")
     commandList("admin")
@@ -136,6 +136,28 @@ def add():
     ws.append([uid, acc_no, user_name, account_type, balance,pin])
     wb.save('bank.xlsx')
     print("Data was stored in the database successfully\n")
+
+def remove_data():
+  uid_to_remove = int(input("Enter the UID whose data is to be removed: "))
+  does_uid_exists = does_value_exist(uid_to_remove,1,2)
+  if does_uid_exists == False:
+    print("The UID doesnt exists\n")
+  else:
+    is_admin = account_details(does_uid_exists)
+    if is_admin == "admin":
+      os.system("cls")
+      print("Only owner can delete admin accounts\n")   
+    else:
+      is_delete = input(
+        "! Warning the above data will be erased..\n"
+        "do you wish to proceeed Y/N: ").lower()
+      if is_delete == 'y':
+        ws.delete_rows(does_uid_exists)
+        print("Successfully deleted the data from the database\n")
+        wb.save('bank.xlsx')
+        os.system("cls")
+      else:
+        os.system("cls")
 
 def available_function(account_type,cell_row):
   if account_type == "general user":
@@ -167,10 +189,12 @@ def available_function(account_type,cell_row):
       command = input("command number: ")
       if command == "1":
         os.system("cls")
-        add()
+        add_data()
+        commandList("admin")
       elif command == "2":
         os.system("cls")
-        print("remove")
+        remove_data()
+        commandList("admin")
       elif command == "3":
         os.system("cls")
         print("edit")
