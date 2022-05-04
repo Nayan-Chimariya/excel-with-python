@@ -74,6 +74,14 @@ def commandList(account_type):
       "(4) Exit\n"
       "-------------------------\n")
 
+def get_cell_address(title,row):
+  title_values ={
+    "Account Number" : 'B' ,
+    "User Name"      : 'C' ,  
+    "Pin"             : 'F'
+  }
+  col = title_values[title] 
+  return col + str(row)
 
 def Deposit(cell_row,type,transferred):
   if type == "deposit":
@@ -152,13 +160,41 @@ def remove_data():
         "! Warning the above data will be erased..\n"
         "do you wish to proceeed Y/N: ").lower()
       if is_delete == 'y':
+        os.system("cls")
         ws.delete_rows(does_uid_exists)
         print("Successfully deleted the data from the database\n")
         wb.save('bank.xlsx')
-        os.system("cls")
       else:
         os.system("cls")
 
+def edit_data():
+  uid = int(input("Enter UID for edit: "))
+  does_uid_exists=(does_value_exist(uid,1,2))
+  if does_uid_exists == False:
+    print("The UID doesnt exists\n")
+  else:
+    print("...previous value...\n")
+    account_details(does_uid_exists)
+    acc_no = int(input("Enter Account Number: "))
+    does_acc_no_exists = does_value_exist(acc_no,2,3)
+    if does_acc_no_exists != False:
+      print("The account number exists please create unique account number\n")
+      commandList("admin")
+    else:
+      acc_no_address = get_cell_address("Account Number",does_uid_exists)
+      ws[acc_no_address] = acc_no
+      user_name = input("Enter user name: ")
+      user_name_address = get_cell_address("User Name",does_uid_exists)
+      ws[user_name_address] = user_name
+      pin = input("Enter pin value: ")
+      pin_address = get_cell_address("Pin",does_uid_exists)
+      ws[pin_address] = pin
+      os.system("cls")
+      print("Data Successfully Edited\n"
+      "...New data is...\n")
+      wb.save('bank.xlsx')
+      account_details(does_uid_exists)
+      
 def available_function(account_type,cell_row):
   if account_type == "general user":
     commandList("general user")
@@ -197,7 +233,8 @@ def available_function(account_type,cell_row):
         commandList("admin")
       elif command == "3":
         os.system("cls")
-        print("edit")
+        edit_data()
+        commandList("admin")
       else:  
         break
     
@@ -206,8 +243,6 @@ print(
   "Welcome to bank\n"
   "---------------\n"
 )
-
-acount_type = " "
 
 def main():
   uid = int(input("Enter you ID: "))
@@ -239,4 +274,3 @@ def main():
       main()
 
 main()
-
