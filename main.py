@@ -239,9 +239,9 @@ def available_function(account_type,cell_row):
         break
     
 print(
-  "----------------\n"
+  "---------------\n"
   "Welcome to bank\n"
-  "----------------\n"
+  "---------------\n"
 )
 
 def main():
