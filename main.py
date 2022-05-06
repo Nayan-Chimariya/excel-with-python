@@ -78,7 +78,7 @@ def get_cell_address(title,row):
   title_values ={
     "Account Number" : 'B' ,
     "User Name"      : 'C' ,  
-    "Pin"             : 'F'
+    "Pin"            : 'F'
   }
   col = title_values[title] 
   return col + str(row)
@@ -239,9 +239,9 @@ def available_function(account_type,cell_row):
         break
     
 print(
-  "---------------\n"
+  "----------------\n"
   "Welcome to bank\n"
-  "---------------\n"
+  "----------------\n"
 )
 
 def main():
